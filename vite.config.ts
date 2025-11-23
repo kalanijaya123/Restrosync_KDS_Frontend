@@ -7,3 +7,7 @@ export const KDS_CONFIG = {
   warningTime: 8 * 60 * 1000,
 }
 
+export default defineConfig({
+  plugins: [react()],
+})
+
