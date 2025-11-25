@@ -1,6 +1,7 @@
 import React from 'react'
 import { useOrders } from '../hooks/useOrders'
 import { OrderCard } from '../components/OrderCard'
+import { Layout } from '../components/Layout'
 
 const GrillStation = () => {
     const { orders, updateStatus } = useOrders()
@@ -13,18 +14,20 @@ const GrillStation = () => {
     )
 
     return (
-        <div className="min-h-screen bg-red-950 text-white p-10">
-            <h1 className="text-4xl text-center mb-6 text-red-400 font-bold">GRILL STATION</h1>
-            <div className="grid grid-cols-3 gap-12">
-                {grillOrders.map(order => (
-                    <OrderCard
-                        key={order.id}
-                        order={order}
-                        onNext={() => updateStatus(order.id, 'ready')}
-                    />
-                ))}
+        <Layout>
+            <div className="min-h-screen bg-red-950 text-white p-10">
+                <h1 className="text-4xl text-center mb-6 text-red-400 font-bold">GRILL STATION</h1>
+                <div className="grid grid-cols-3 gap-12">
+                    {grillOrders.map(order => (
+                        <OrderCard
+                            key={order.id}
+                            order={order}
+                            onNext={() => updateStatus(order.id, 'ready')}
+                        />
+                    ))}
+                </div>
             </div>
-        </div>
+        </Layout>
     )
 }
 
