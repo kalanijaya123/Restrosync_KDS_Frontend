@@ -1,5 +1,5 @@
 import React from 'react'
-import { KDS_CONFIG } from '../../../vite.config'
+import { KDS_CONFIG } from '../kdsConfig'
 
 interface Props {
     createdAt: string
@@ -18,7 +18,7 @@ export const OrderTimer: React.FC<Props> = ({ createdAt }) => {
     const isWarning = elapsed > KDS_CONFIG.warningTime
 
     return (
-        <div className={`text-4xl font-bold ${isWarning ? 'text-red-400' : 'text-gray-300'}`}>
+        <div className={`text-lg font-bold ${isWarning ? 'text-red-400' : 'text-gray-300'}`}>
             {minutes}:{seconds.toString().padStart(2, '0')}
         </div>
     )

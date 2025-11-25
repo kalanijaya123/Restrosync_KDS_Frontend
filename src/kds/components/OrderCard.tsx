@@ -1,4 +1,5 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import type { Order } from '../types'
 import { OrderTimer } from './OrderTimer'
 
@@ -6,33 +7,35 @@ interface Props {
     order: Order
     onNext: () => void
 }
-
-export const OrderCard: React.FC<Props> = ({ order, onNext }) => {
+export const OrderCard = ({ order, onNext }: Props) => {
     return (
-        <div className="bg-white text-black rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom">
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-8">
-                <div className="flex justify-between items-center">
-                    <h3 className="text-7xl font-bold">{order.tableId}</h3>
-                    <OrderTimer createdAt={order.createdAt} />
-                </div>
+
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white/10 backdrop-blur-md rounded-xl p-5 border border-white/20 hover:bg-white/20 transition-all"
+        >
+            <div className="flex justify-between items-start mb-3">
+                <h3 className="text-2xl font-bold text-yellow-300">{order.tableId}</h3>
+                <OrderTimer createdAt={order.createdAt} />
             </div>
 
-            <div className="p-10">
-                {order.items.map((item, i) => (
-                    <div key={i} className="text-5xl font-semibold py-4 border-b-2 border-gray-300">
-                        {item.qty} × {item.name}
+            <div className="space-y-2 mb-4">
+                {order.items.map((item: any) => (
+                    <div key={item.name} className="text-lg font-medium">
+                        <span className="text-cyan-300">{item.qty}×</span> {item.name}
                     </div>
                 ))}
-
-                {order.status !== 'ready' && (
-                    <button
-                        onClick={onNext}
-                        className="mt-10 w-full bg-green-600 hover:bg-green-700 text-white py-10 rounded-3xl text-6xl font-bold shadow-2xl transition"
-                    >
-                        {order.status === 'pending' ? 'START' : 'READY'}
-                    </button>
-                )}
             </div>
-        </div>
+
+            {order.status !== 'ready' && (
+                <button
+                    onClick={onNext}
+                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-4 rounded-lg text-lg transition transform hover:scale-105 active:scale-95"
+                >
+                    {order.status === 'pending' ? 'START COOKING' : 'MARK AS READY'}
+                </button>
+            )}
+        </motion.div>
     )
 }

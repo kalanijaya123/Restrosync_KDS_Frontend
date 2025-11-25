@@ -1,3 +1,4 @@
+// src/kds/hooks/useOrders.ts
 import { useState, useEffect } from 'react'
 import type { Order } from '../types'
 
@@ -5,22 +6,39 @@ export const useOrders = () => {
     const [orders, setOrders] = useState<Order[]>([])
 
     useEffect(() => {
+        const API_BASE = import.meta.env.VITE_API_URL || ''
+
         const fetchOrders = async () => {
             try {
-                const res = await fetch('http://localhost:8080/api/orders/kds')
+                const res = await fetch(`${API_BASE}/api/orders/kds`)
                 if (res.ok) {
                     const data = await res.json()
-                    const newOrders = Array.isArray(data) ? data : []
+                    const raw = Array.isArray(data) ? data : []
 
-                    // Sound for new pending order
-                    if (newOrders.length > orders.length) {
-                        const hasNew = newOrders.some(o => o.status === 'pending' && !orders.find(x => x.id === o.id))
-                        if (hasNew) new Audio('/ding.mp3').play().catch(() => { })
+                    // Normalize incoming orders to avoid null/undefined fields
+                    const newOrders = raw.map(o => ({
+                        id: o.id,
+                        tableId: o.tableId ?? '—',
+                        status: o.status ?? 'pending',
+                        createdAt: o.createdAt ?? new Date().toISOString(),
+                        total: o.total ?? 0,
+                        items: Array.isArray(o.items) ? o.items.map((it: any) => ({
+                            name: typeof it?.name === 'string' && it.name.trim() !== '' ? it.name : 'Unknown item',
+                            qty: typeof it?.qty === 'number' ? it.qty : 1,
+                            price: typeof it?.price === 'number' ? it.price : 0
+                        })) : []
+                    }))
+
+                    // Sound for new order
+                    if (newOrders.length > orders.length && newOrders.some(o => o.status === 'pending')) {
+                        new Audio('/ding.mp3').play().catch(() => { })
                     }
 
                     setOrders(newOrders)
                 }
-            } catch (err) { }
+            } catch (err) {
+                console.log('Backend not running yet — waiting...')
+            }
         }
 
         fetchOrders()
@@ -28,7 +46,7 @@ export const useOrders = () => {
         return () => clearInterval(interval)
     }, [orders.length])
 
-    const updateStatus = async (id: string, status: 'preparing' | 'ready') => {
+    const updateStatus = async (id: string, status: Order['status']) => {
         await fetch(`http://localhost:8080/api/orders/${id}/status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },

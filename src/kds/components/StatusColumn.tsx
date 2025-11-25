@@ -16,7 +16,7 @@ const colors = {
 export const StatusColumn: React.FC<Props> = ({ title, orders, onNext }) => {
     return (
         <div className={`${colors[title as keyof typeof colors]} p-10 rounded-3xl`}>
-            <h2 className="text-7xl font-bold text-white text-center mb-10">
+            <h2 className="text-2xl font-bold text-white text-center mb-6">
                 {title.toUpperCase()} ({orders.length})
             </h2>
             <div className="space-y-10">
