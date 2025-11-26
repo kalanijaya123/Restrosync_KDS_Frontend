@@ -14,14 +14,21 @@ const ExpediteScreen = () => {
                     {readyOrders.length === 0 ? (
                         <div className="col-span-5 text-center text-2xl text-gray-500">No orders ready</div>
                     ) : (
-                        readyOrders.map(order => (
-                            <div
-                                key={order.id}
-                                className="bg-white text-black p-8 rounded-3xl text-center text-3xl font-bold text-green-600 shadow-2xl"
-                            >
-                                {order.tableId.replace('Table ', '')}
-                            </div>
-                        ))
+                        readyOrders.map(order => {
+                            const tableNum = (() => {
+                                const t = order.tableId ?? ''
+                                const m = String(t).match(/\d+/)
+                                return m ? m[0] : (t || '')
+                            })()
+                            return (
+                                <div
+                                    key={order.id}
+                                    className="bg-white text-black p-8 rounded-3xl text-center text-3xl font-bold text-green-600 shadow-2xl"
+                                >
+                                    {tableNum}
+                                </div>
+                            )
+                        })
                     )}
                 </div>
             </div>

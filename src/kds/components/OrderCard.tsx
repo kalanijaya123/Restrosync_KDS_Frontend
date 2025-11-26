@@ -8,6 +8,20 @@ interface Props {
     onNext: () => void
 }
 export const OrderCard = ({ order, onNext }: Props) => {
+    const tableLabel = (() => {
+        const t = order.tableId ?? ''
+        if (!t) return '—'
+        const m = String(t).match(/\d+/)
+        return m ? m[0] : String(t)
+    })()
+
+    const orderNumber = (() => {
+        // Prefer explicit orderNo from API, otherwise derive a short id
+        if ((order as any).orderNo) return (order as any).orderNo
+        if (order.id) return String(order.id).slice(-6).toUpperCase()
+        return '—'
+    })()
+
     return (
 
         <motion.div
@@ -16,7 +30,10 @@ export const OrderCard = ({ order, onNext }: Props) => {
             className="bg-white/10 backdrop-blur-md rounded-xl p-5 border border-white/20 hover:bg-white/20 transition-all"
         >
             <div className="flex justify-between items-start mb-3">
-                <h3 className="text-2xl font-bold text-yellow-300">{order.tableId}</h3>
+                <div>
+                    <h3 className="text-2xl font-bold text-yellow-300">{tableLabel}</h3>
+                    <div className="text-sm text-gray-300">Order #{orderNumber}</div>
+                </div>
                 <OrderTimer createdAt={order.createdAt} />
             </div>
 
