@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
+// src/pages/MainKDS.tsx
 import { useOrders } from '../hooks/useOrders'
 import { OrderCard } from '../components/OrderCard'
-import { ChefHat, Clock, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { ChefHat } from 'lucide-react'
 import { Layout } from '../components/Layout'
 
 const MainKDS = () => {
@@ -14,7 +14,7 @@ const MainKDS = () => {
     return (
         <Layout>
             <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-950 text-white">
-                {/* HEADER — Clean & Professional */}
+                {/* HEADER */}
                 <header className="bg-gradient-to-r from-indigo-900 to-purple-900 py-6 shadow-2xl border-b-4 border-purple-500">
                     <div className="max-w-7xl mx-auto px-8 flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -29,70 +29,42 @@ const MainKDS = () => {
                     </div>
                 </header>
 
-                {/* STATS BAR */}
+                {/* STATS */}
                 <div className="bg-black/50 backdrop-blur border-b border-gray-800 py-5">
                     <div className="max-w-7xl mx-auto px-8 grid grid-cols-3 gap-8 text-center">
-                        <div>
-                            <div className="text-5xl font-bold text-red-400">{pending.length}</div>
-                            <div className="text-lg text-red-300 flex items-center justify-center gap-2 mt-1">
-                                <AlertCircle className="w-5 h-5" /> PENDING
-                            </div>
-                        </div>
-                        <div>
-                            <div className="text-5xl font-bold text-amber-400">{preparing.length}</div>
-                            <div className="text-lg text-amber-300">PREPARING</div>
-                        </div>
-                        <div>
-                            <div className="text-5xl font-bold text-emerald-400">{ready.length}</div>
-                            <div className="text-lg text-emerald-300 flex items-center justify-center gap-2">
-                                READY <CheckCircle2 className="w-5 h-5" />
-                            </div>
-                        </div>
+                        <div><div className="text-5xl font-bold text-red-400">{pending.length}</div><div className="text-lg text-red-300">PENDING</div></div>
+                        <div><div className="text-5xl font-bold text-amber-400">{preparing.length}</div><div className="text-lg text-amber-300">PREPARING</div></div>
+                        <div><div className="text-5xl font-bold text-emerald-400">{ready.length}</div><div className="text-lg text-emerald-300">READY</div></div>
                     </div>
                 </div>
 
-                {/* MAIN 3 COLUMNS — PERFECT STANDARD SIZE */}
+                {/* 3 COLUMNS */}
                 <div className="max-w-7xl mx-auto p-8">
                     <div className="grid grid-cols-3 gap-8">
-                        {/* PENDING */}
                         <div className="bg-gradient-to-b from-red-900/80 to-red-950/90 rounded-2xl p-6 shadow-2xl border border-red-800/50">
                             <h2 className="text-3xl font-bold text-red-300 text-center mb-6">PENDING ({pending.length})</h2>
                             <div className="space-y-5 max-h-screen overflow-y-auto">
-                                {pending.length === 0 ? (
-                                    <p className="text-center text-gray-400 text-lg py-10">No pending orders</p>
-                                ) : (
-                                    pending.map(order => (
-                                        <OrderCard key={order.id} order={order} onNext={() => updateStatus(order.id, 'preparing')} />
-                                    ))
-                                )}
+                                {pending.map(order => (
+                                    <OrderCard key={order.id} order={order} onNext={() => updateStatus(order.id, 'preparing')} />
+                                ))}
                             </div>
                         </div>
 
-                        {/* PREPARING */}
                         <div className="bg-gradient-to-b from-amber-900/80 to-amber-950/90 rounded-2xl p-6 shadow-2xl border border-amber-800/50">
                             <h2 className="text-3xl font-bold text-amber-300 text-center mb-6">PREPARING ({preparing.length})</h2>
                             <div className="space-y-5 max-h-screen overflow-y-auto">
-                                {preparing.length === 0 ? (
-                                    <p className="text-center text-gray-400 text-lg py-10">All caught up!</p>
-                                ) : (
-                                    preparing.map(order => (
-                                        <OrderCard key={order.id} order={order} onNext={() => updateStatus(order.id, 'ready')} />
-                                    ))
-                                )}
+                                {preparing.map(order => (
+                                    <OrderCard key={order.id} order={order} onNext={() => updateStatus(order.id, 'ready')} />
+                                ))}
                             </div>
                         </div>
 
-                        {/* READY */}
                         <div className="bg-gradient-to-b from-emerald-900/80 to-emerald-950/90 rounded-2xl p-6 shadow-2xl border border-emerald-800/50">
                             <h2 className="text-3xl font-bold text-emerald-300 text-center mb-6">READY ({ready.length})</h2>
                             <div className="space-y-5 max-h-screen overflow-y-auto">
-                                {ready.length === 0 ? (
-                                    <p className="text-center text-gray-400 text-lg py-10">Waiting for orders</p>
-                                ) : (
-                                    ready.map(order => (
-                                        <OrderCard key={order.id} order={order} onNext={() => { }} />
-                                    ))
-                                )}
+                                {ready.map(order => (
+                                    <OrderCard key={order.id} order={order} onNext={() => { }} />
+                                ))}
                             </div>
                         </div>
                     </div>

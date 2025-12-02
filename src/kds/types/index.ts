@@ -6,8 +6,14 @@ export interface OrderItem {
 
 export interface Order {
     id: string
-    /** Optional human-friendly order number from API */
-    orderNo?: string
+    /** Human-friendly order number from API */
+    orderNo: number
+    /** Kitchen order token (optional) */
+    kotToken?: string
+    /** Customer display name (optional) */
+    customerName?: string
+    /** Order source (e.g., 'pos', 'mobile') */
+    source?: string
     tableId: string
     /** Optional numeric table identifier if provided separately */
     tableNo?: string

@@ -1,21 +1,26 @@
+import React from 'react'
 import { OrderCard } from './OrderCard'
 import type { Order } from '../types'
 
+type StatusKey = 'pending' | 'preparing' | 'ready'
+
 interface Props {
-    title: string
+    title: StatusKey
     orders: Order[]
     onNext: (id: string) => void
 }
 
-const colors = {
+const colors: Record<StatusKey, string> = {
     pending: 'bg-red-900',
     preparing: 'bg-yellow-900',
     ready: 'bg-green-900'
 }
 
 export const StatusColumn: React.FC<Props> = ({ title, orders, onNext }) => {
+    const bg = colors[title] ?? 'bg-gray-800'
+
     return (
-        <div className={`${colors[title as keyof typeof colors]} p-10 rounded-3xl`}>
+        <div className={`${bg} p-10 rounded-3xl`}>
             <h2 className="text-2xl font-bold text-white text-center mb-6">
                 {title.toUpperCase()} ({orders.length})
             </h2>
