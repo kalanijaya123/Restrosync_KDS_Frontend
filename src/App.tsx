@@ -16,6 +16,7 @@ const App = () => {
           <Route path="/kds/main" element={<MainKDS />} />
           <Route path="/kds/prep" element={<PrepStation />} />
           <Route path="/kds/grill" element={<GrillStation />} />
+          <Route path="/kds/drinks" element={<DrinksStation />} />
           <Route path="/kds/expedite" element={<ExpediteScreen />} />
         </Routes>
       </div>
