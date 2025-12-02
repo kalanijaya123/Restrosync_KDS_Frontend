@@ -1,68 +1,70 @@
-// src/kds/hooks/useOrders.ts
+// src/hooks/useOrders.ts
 import { useState, useEffect } from 'react'
-import type { Order } from '../types'
+import toast from 'react-hot-toast'
+
+export interface Order {
+    id: string
+    orderNo: number
+    kotToken: string
+    tableId?: string | null
+    source: string
+    items: any[]
+    total: number
+    status: 'pending' | 'preparing' | 'ready' | 'served' | 'cancelled' | 'paid'
+    createdAt: any // Accept array or string
+    updatedAt: any
+    customerName: string
+    customerPhone?: string | null
+    notes?: string | null
+    waiterName: string
+}
 
 export const useOrders = () => {
     const [orders, setOrders] = useState<Order[]>([])
-    const API_BASE = import.meta.env.VITE_API_URL || ''
+
+    const fetchOrders = async () => {
+        try {
+            const res = await fetch('http://localhost:8080/api/orders/kds')
+            if (!res.ok) throw new Error()
+            const data = await res.json()
+
+            // FIX: Convert MongoDB array dates to proper Date strings
+            const normalized = data.map((order: any) => ({
+                ...order,
+                createdAt: Array.isArray(order.createdAt)
+                    ? new Date(order.createdAt[0], order.createdAt[1] - 1, order.createdAt[2], 
+                               order.createdAt[3] || 0, order.createdAt[4] || 0, order.createdAt[5] || 0).toISOString()
+                    : order.createdAt,
+                updatedAt: Array.isArray(order.updatedAt)
+                    ? new Date(order.updatedAt[0], order.updatedAt[1] - 1, order.updatedAt[2]).toISOString()
+                    : order.updatedAt,
+            }))
+
+            setOrders(normalized)
+        } catch (err) {
+            toast.error('KDS: Failed to load orders')
+        }
+    }
 
     useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const res = await fetch(`${API_BASE}/api/orders/kds`)
-                if (res.ok) {
-                    const data = await res.json()
-                    const raw = Array.isArray(data) ? data : []
-
-                    // Normalize incoming orders to avoid null/undefined fields
-                    const newOrders: Order[] = raw.map((o: any, i: number) => ({
-                        id: String(o.id ?? `gen-${i}`),
-                        // prefer numeric orderNo if provided, else use index-based fallback
-                        orderNo: (typeof o?.orderNo === 'number') ? o.orderNo : (typeof o?.orderNo === 'string' && /\d+/.test(o.orderNo) ? parseInt(o.orderNo.match(/\d+/)![0], 10) : (i + 1)),
-                        kotToken: o.kotToken ?? undefined,
-                        customerName: o.customerName ?? o.customerDisplayName ?? 'Guest',
-                        source: o.source ?? undefined,
-                        tableId: o.tableId ?? '—',
-                        tableNo: o.tableNo ?? undefined,
-                        status: (o.status === 'preparing' || o.status === 'ready') ? o.status : 'pending',
-                        createdAt: o.createdAt ?? new Date().toISOString(),
-                        total: typeof o.total === 'number' ? o.total : 0,
-                        items: Array.isArray(o.items) ? o.items.map((it: any) => ({
-                            name: typeof it?.name === 'string' && it.name.trim() !== '' ? it.name : 'Unknown item',
-                            qty: typeof it?.qty === 'number' ? it.qty : 1,
-                            price: typeof it?.price === 'number' ? it.price : 0
-                        })) : []
-                    }))
-
-                    // Sound for new order
-                    if (newOrders.length > orders.length && newOrders.some(o => o.status === 'pending')) {
-                        new Audio('/ding.mp3').play().catch(() => { })
-                    }
-
-                    setOrders(newOrders)
-                }
-            } catch (err) {
-                console.log('Backend not running yet — waiting...')
-            }
-        }
-
         fetchOrders()
-        const interval = setInterval(fetchOrders, 3000)
+        const interval = setInterval(fetchOrders, 3000) // Auto-refresh every 3s
         return () => clearInterval(interval)
-    }, [orders.length, API_BASE])
+    }, [])
 
-    const updateStatus = async (id: string, status: Order['status']) => {
+    const updateStatus = async (id: string, status: string) => {
         try {
-            await fetch(`${API_BASE}/api/orders/${id}/status`, {
+            await fetch(`http://localhost:8080/api/orders/${id}/status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status })
             })
+            fetchOrders()
+            toast.success(`Order moved to ${status.toUpperCase()}!`)
         } catch (err) {
-            console.warn('Failed to update status', err)
+            toast.error('Failed to update status')
         }
-        setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o))
     }
 
-    return { orders, updateStatus }
+    return { orders, updateStatus, refetch: fetchOrders }
 }
