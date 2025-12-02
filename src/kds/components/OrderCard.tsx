@@ -45,14 +45,34 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
         return () => clearInterval(id)
     }, [order.createdAt])
 
-    const isTakeaway = !order.tableId
+    // Local untyped accessor for optional/variant fields from backend payloads
+    const o: any = order as any
+
+    // Determine order mode: explicit flags (orderType/type/source/isTakeaway) take precedence,
+    // otherwise fall back to presence of `tableId`.
+    const _explicitIsTakeaway = ((): boolean | null => {
+        if (typeof o?.isTakeaway === 'boolean') return o.isTakeaway
+        if (typeof o?.takeaway === 'boolean') return o.takeaway
+        return null
+    })()
+
+    const typeHint = String(o?.orderType ?? o?.type ?? o?.source ?? '').toLowerCase()
+
+    const isTakeaway = (() => {
+        if (_explicitIsTakeaway !== null) return _explicitIsTakeaway
+        if (typeHint) {
+            if (typeHint.includes('take') || typeHint.includes('delivery') || typeHint.includes('parcel') || typeHint.includes('pickup')) return true
+            if (typeHint.includes('dine') || typeHint.includes('table') || typeHint.includes('eat')) return false
+        }
+        return !o?.tableId && !o?.tableNo
+    })()
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-gradient-to-br from-gray-900/90 to-black/80 backdrop-blur-xl rounded-xl p-4 border border-white/10 shadow-lg hover:shadow-purple-600/20 transition-all"
+            className="bg-linear-to-br from-gray-900/90 to-black/80 backdrop-blur-xl rounded-xl p-4 border border-white/10 shadow-lg hover:shadow-purple-600/20 transition-all"
         >
             {/* KOT TOKEN + TIME + TABLE/TAKEAWAY */}
             <div className="flex justify-between items-start mb-6">
@@ -68,13 +88,20 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
 
                 <div>
                     {isTakeaway ? (
-                        <span className="px-3 py-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-sm font-bold shadow">
+                        <span className="px-3 py-1 bg-linear-to-r from-purple-600 to-pink-600 rounded-full text-sm font-bold shadow">
                             TAKEAWAY
                         </span>
                     ) : (
-                        <span className="px-4 py-2 bg-gradient-to-r from-orange-600 to-red-700 rounded-full text-base font-extrabold shadow">
-                            T{order.tableId?.slice(-4).toUpperCase() || '??'}
-                        </span>
+                        // Dine-in: prefer showing tableId/tableNo when available, otherwise show DINE-IN
+                        o.tableId || o.tableNo ? (
+                            <span className="px-4 py-2 bg-linear-to-r from-orange-600 to-red-700 rounded-full text-base font-extrabold shadow">
+                                T{String(o.tableId ?? o.tableNo).slice(-4).toUpperCase()}
+                            </span>
+                        ) : (
+                            <span className="px-3 py-1 bg-linear-to-r from-emerald-600 to-cyan-600 rounded-full text-sm font-bold shadow">
+                                DINE-IN
+                            </span>
+                        )
                     )}
                 </div>
             </div>
@@ -93,7 +120,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
                 )}
                 {order.notes && order.notes.trim() && (
                     <div className="mt-3 flex items-start gap-2 text-orange-400 font-medium bg-orange-900/30 rounded-lg p-2">
-                        <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                        <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
                         <span className="text-sm">{order.notes}</span>
                     </div>
                 )}
@@ -148,7 +175,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
 
                 <button
                     onClick={onNext}
-                    className="w-full py-2 bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-600 hover:from-cyan-600 hover:to-pink-700 rounded-md font-semibold text-sm shadow-md transform hover:scale-105 transition-all"
+                    className="w-full py-2 bg-linear-to-r from-cyan-500 via-purple-600 to-pink-600 hover:from-cyan-600 hover:to-pink-700 rounded-md font-semibold text-sm shadow-md transform hover:scale-105 transition-all"
                 >
                     {order.status === 'pending' && 'START COOKING'}
                     {order.status === 'preparing' && 'MARK AS READY'}
