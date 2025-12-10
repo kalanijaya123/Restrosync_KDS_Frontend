@@ -11,9 +11,9 @@ interface Props {
 }
 
 const colors: Record<StatusKey, string> = {
-    pending: 'bg-red-900',
-    preparing: 'bg-yellow-900',
-    ready: 'bg-green-900'
+    pending: 'bg-red-50 dark:bg-red-900/20 border-2 border-red-300 dark:border-red-700',
+    preparing: 'bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-300 dark:border-amber-700',
+    ready: 'bg-emerald-50 dark:bg-emerald-900/20 border-2 border-emerald-300 dark:border-emerald-700'
 }
 
 export const StatusColumn: React.FC<Props> = ({ title, onNext }) => {
@@ -36,7 +36,7 @@ export const StatusColumn: React.FC<Props> = ({ title, onNext }) => {
 
     return (
         <div className={`${bg} p-4 rounded-xl`}>
-            <h2 className="text-lg font-semibold text-white text-center mb-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white text-center mb-4">
                 {title.toUpperCase()} ({ordersForStatus.length})
             </h2>
             <div className="space-y-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 240px)' }}>

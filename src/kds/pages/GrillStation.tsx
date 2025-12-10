@@ -30,15 +30,15 @@ const GrillKDS = () => {
 
     return (
         <Layout>
-            <div className="min-h-screen bg-gradient-to-br from-red-950 via-black to-orange-950 text-white">
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
                 <header className="py-4">
                     <div className="max-w-5xl mx-auto px-6 flex items-center gap-4">
                         <Flame className="w-8 h-8 text-orange-400" />
-                        <h1 className="text-2xl font-bold">GRILL STATION</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">GRILL STATION</h1>
                     </div>
                 </header>
 
-                <div className="bg-black/70 py-4">
+                <div className="bg-gray-100 dark:bg-gray-800 py-4">
                     <div className="max-w-5xl mx-auto px-6 grid grid-cols-3 gap-6 text-center">
                         <div><div className="text-3xl font-bold text-red-500">{pending.length}</div><div className="text-sm text-red-400 mt-1">PENDING</div></div>
                         <div><div className="text-3xl font-bold text-orange-500">{preparing.length}</div><div className="text-sm text-orange-400">GRILLING</div></div>
@@ -48,8 +48,8 @@ const GrillKDS = () => {
 
                 <div className="px-6 py-6">
                     <div className="grid grid-cols-3 gap-6 max-w-5xl mx-auto">
-                        <div className="bg-gradient-to-b from-red-900/80 to-black rounded-xl p-4 shadow-lg border border-red-800">
-                            <h2 className="text-lg font-semibold text-red-300 text-center mb-4">FIRE UP</h2>
+                        <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 shadow-lg border-2 border-red-300 dark:border-red-700">
+                            <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 text-center mb-4">FIRE UP</h2>
                             <div className="space-y-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
                                 {pending.map(order => (
                                     <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'preparing')} />
@@ -57,8 +57,8 @@ const GrillKDS = () => {
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-b from-orange-900/80 to-black rounded-xl p-4 shadow-lg border border-orange-800">
-                            <h2 className="text-lg font-semibold text-orange-300 text-center mb-4">ON FIRE</h2>
+                        <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4 shadow-lg border-2 border-orange-300 dark:border-orange-700">
+                            <h2 className="text-lg font-semibold text-orange-600 dark:text-orange-400 text-center mb-4">ON FIRE</h2>
                             <div className="space-y-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
                                 {preparing.map(order => (
                                     <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'ready')} />
@@ -66,8 +66,8 @@ const GrillKDS = () => {
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-b from-emerald-900/80 to-black rounded-xl p-4 shadow-lg border border-emerald-800">
-                            <h2 className="text-lg font-semibold text-emerald-300 text-center mb-4">PLATED</h2>
+                        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4 shadow-lg border-2 border-emerald-300 dark:border-emerald-700">
+                            <h2 className="text-lg font-semibold text-emerald-600 dark:text-emerald-400 text-center mb-4">PLATED</h2>
                             <div className="space-y-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
                                 {ready.map(order => (
                                     <OrderCard key={order.id} order={order as any} onNext={() => { }} />

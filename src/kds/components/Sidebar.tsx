@@ -10,6 +10,7 @@ import {
     Clock,
     Home
 } from 'lucide-react'
+import { useDarkMode } from '../../contexts/DarkModeContext'
 
 const menuItems = [
     { to: "/kds/main", label: "Main Kitchen", icon: LayoutDashboard },
@@ -22,29 +23,31 @@ const menuItems = [
 
 export const Sidebar = () => {
     const location = useLocation()
+    const { darkMode } = useDarkMode()
 
     return (
-        <div className="fixed left-0 top-0 h-screen w-80 bg-gradient-to-b from-gray-900 via-black to-gray-950 border-r border-gray-800 shadow-2xl z-50">
+        <div className={`fixed left-0 top-0 h-screen w-80 border-r shadow-2xl z-50 transition-colors ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'
+            }`}>
             {/* Logo & Title */}
-            <div className="p-8 border-b border-gray-800">
+            <div className={`p-8 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                 <div className="flex items-center gap-4">
-                    <div className="bg-gradient-to-br from-purple-600 to-pink-600 p-4 rounded-2xl">
+                    <div className="bg-emerald-500 p-4 rounded-2xl">
                         <ChefHat className="w-10 h-10 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-black text-white">RestroSync</h1>
-                        <p className="text-sm text-gray-400">Kitchen Display System</p>
+                        <h1 className={`text-3xl font-black ${darkMode ? 'text-white' : 'text-gray-900'}`}>RestroSync</h1>
+                        <p className="text-sm text-gray-500">Kitchen Display System</p>
                     </div>
                 </div>
             </div>
 
             {/* Current Time & Date */}
-            <div className="px-8 py-6 border-b border-gray-800">
+            <div className={`px-8 py-6 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                 <div className="text-center">
-                    <div className="text-4xl font-bold text-yellow-400">
+                    <div className="text-4xl font-bold text-emerald-500">
                         {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                     </div>
-                    <div className="text-gray-400 mt-1">
+                    <div className="text-gray-500 mt-1">
                         {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                     </div>
                 </div>
@@ -63,8 +66,8 @@ export const Sidebar = () => {
                                     to={item.to}
                                     className={`flex items-center gap-4 px-6 py-5 rounded-2xl text-lg font-semibold transition-all duration-300 transform hover:scale-105
                     ${isActive
-                                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-2xl shadow-purple-500/50'
-                                            : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                                            ? 'bg-emerald-500 text-white shadow-2xl shadow-emerald-500/50'
+                                            : darkMode ? 'text-gray-300 hover:bg-gray-800 hover:text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                                         }`}
                                 >
                                     <Icon className="w-7 h-7" />
@@ -78,8 +81,8 @@ export const Sidebar = () => {
             </nav>
 
             {/* Bottom Section */}
-            <div className="p-6 border-t border-gray-800">
-                <button className="w-full flex items-center gap-4 px-6 py-5 rounded-2xl bg-red-900/50 hover:bg-red-800 text-red-300 hover:text-white transition-all">
+            <div className={`p-6 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                <button className="w-full flex items-center gap-4 px-6 py-5 rounded-2xl bg-red-500 hover:bg-red-600 text-white transition-all">
                     <LogOut className="w-7 h-7" />
                     <span className="font-semibold text-lg">Logout</span>
                 </button>

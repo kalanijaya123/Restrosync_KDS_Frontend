@@ -4,12 +4,13 @@ import PrepStation from './kds/pages/PrepStation'
 import GrillStation from './kds/pages/GrillStation'
 import DrinksStation from './kds/pages/DrinksStation'
 import ExpediteScreen from './kds/pages/ExpediteScreen'
+import SettingsPage from './kds/pages/SettingsPage'
 
 
 const App = () => {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
 
         <Routes>
           <Route path="/" element={<MainKDS />} />
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/kds/grill" element={<GrillStation />} />
           <Route path="/kds/drinks" element={<DrinksStation />} />
           <Route path="/kds/expedite" element={<ExpediteScreen />} />
+          <Route path="/kds/settings" element={<SettingsPage />} />
         </Routes>
       </div>
     </BrowserRouter>

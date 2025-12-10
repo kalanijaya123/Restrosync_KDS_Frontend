@@ -28,18 +28,18 @@ const PrepKDS = () => {
 
     return (
         <Layout>
-            <div className="min-h-screen bg-gradient-to-br from-amber-950 via-black to-yellow-950 text-white">
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
                 <header className="py-4">
                     <div className="max-w-5xl mx-auto px-6 flex items-center gap-4">
                         <Utensils className="w-8 h-8 text-yellow-400" />
-                        <h1 className="text-2xl font-bold">PREP STATION</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">PREP STATION</h1>
                     </div>
                 </header>
 
                 <div className="px-6 py-8">
                     <div className="max-w-screen-lg mx-auto grid grid-cols-2 gap-6">
-                        <div className="bg-gradient-to-b from-yellow-900/80 to-black rounded-xl p-6 shadow-lg border border-yellow-700">
-                            <h2 className="text-2xl font-semibold text-yellow-300 text-center mb-4">COOKING</h2>
+                        <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-6 shadow-lg border-2 border-yellow-300 dark:border-yellow-700">
+                            <h2 className="text-2xl font-semibold text-yellow-600 dark:text-yellow-400 text-center mb-4">COOKING</h2>
                             <div className="space-y-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
                                 {preparing.map(order => (
                                     <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'ready')} />
@@ -47,8 +47,8 @@ const PrepKDS = () => {
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-b from-emerald-900/80 to-black rounded-xl p-6 shadow-lg border border-emerald-700">
-                            <h2 className="text-2xl font-semibold text-emerald-300 text-center mb-4">READY</h2>
+                        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-6 shadow-lg border-2 border-emerald-300 dark:border-emerald-700">
+                            <h2 className="text-2xl font-semibold text-emerald-600 dark:text-emerald-400 text-center mb-4">READY</h2>
                             <div className="space-y-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
                                 {ready.map(order => (
                                     <OrderCard key={order.id} order={order as any} onNext={() => { }} />

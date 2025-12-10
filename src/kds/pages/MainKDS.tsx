@@ -61,16 +61,16 @@ const MainKDS = () => {
 
     return (
         <Layout>
-            <div ref={pageRef} className="bg-gradient-to-br from-gray-950 via-black to-purple-950 text-white min-h-screen overflow-auto">
+            <div ref={pageRef} className="bg-gray-50 dark:bg-gray-900 min-h-screen overflow-auto">
 
                 <div className="max-w-screen-2xl mx-auto px-12 py-8 pb-24">
                     <div className="grid grid-cols-3 gap-14 items-start">
                         {/* PENDING */}
-                        <div className="bg-gradient-to-b from-red-900/80 to-red-950/90 rounded-2xl p-6 shadow-lg border border-red-800/40">
-                            <h2 className="text-2xl font-bold text-red-300 text-center mb-6">PENDING ({pending.length})</h2>
+                        <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-6 shadow-lg border-2 border-red-300 dark:border-red-700">
+                            <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 text-center mb-6">PENDING ({pending.length})</h2>
                             <div ref={pendingRef} className="space-y-6 overflow-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
                                 {pendingSorted.length === 0 ? (
-                                    <p className="text-center text-gray-500 text-2xl py-20">No pending orders</p>
+                                    <p className="text-center text-gray-400 dark:text-gray-500 text-2xl py-20">No pending orders</p>
                                 ) : (
                                     pendingSorted.map(order => (
                                         <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'preparing')} />
@@ -80,11 +80,11 @@ const MainKDS = () => {
                         </div>
 
                         {/* PREPARING */}
-                        <div className="bg-gradient-to-b from-amber-900/80 to-amber-950/90 rounded-2xl p-6 shadow-lg border border-amber-800/40">
-                            <h2 className="text-2xl font-bold text-amber-300 text-center mb-6">PREPARING ({preparing.length})</h2>
+                        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl p-6 shadow-lg border-2 border-amber-300 dark:border-amber-700">
+                            <h2 className="text-2xl font-bold text-amber-600 dark:text-amber-400 text-center mb-6">PREPARING ({preparing.length})</h2>
                             <div ref={preparingRef} className="space-y-6 overflow-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
                                 {preparingSorted.length === 0 ? (
-                                    <p className="text-center text-gray-500 text-2xl py-20">All caught up!</p>
+                                    <p className="text-center text-gray-400 dark:text-gray-500 text-2xl py-20">All caught up!</p>
                                 ) : (
                                     preparingSorted.map(order => (
                                         <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'ready')} />
@@ -94,11 +94,11 @@ const MainKDS = () => {
                         </div>
 
                         {/* READY */}
-                        <div className="bg-gradient-to-b from-emerald-900/80 to-emerald-950/90 rounded-2xl p-6 shadow-lg border border-emerald-800/40">
-                            <h2 className="text-2xl font-bold text-emerald-300 text-center mb-6">READY ({ready.length})</h2>
+                        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-6 shadow-lg border-2 border-emerald-300 dark:border-emerald-700">
+                            <h2 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 text-center mb-6">READY ({ready.length})</h2>
                             <div ref={readyRef} className="space-y-6 overflow-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
                                 {readySorted.length === 0 ? (
-                                    <p className="text-center text-gray-500 text-2xl py-20">Waiting for orders</p>
+                                    <p className="text-center text-gray-400 dark:text-gray-500 text-2xl py-20">Waiting for orders</p>
                                 ) : (
                                     readySorted.map(order => (
                                         <OrderCard key={order.id} order={order as any} onNext={() => { }} />
