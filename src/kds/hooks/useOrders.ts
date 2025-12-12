@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+
 export interface Order {
     id: string
     orderNo: number
@@ -24,7 +26,7 @@ export const useOrders = () => {
 
     const fetchOrders = async () => {
         try {
-            const res = await fetch('http://localhost:8080/api/orders/kds')
+            const res = await fetch(`${API_URL}/api/orders/kds`)
             if (!res.ok) throw new Error()
             const data = await res.json()
 
@@ -32,8 +34,8 @@ export const useOrders = () => {
             const normalized = data.map((order: any) => ({
                 ...order,
                 createdAt: Array.isArray(order.createdAt)
-                    ? new Date(order.createdAt[0], order.createdAt[1] - 1, order.createdAt[2], 
-                               order.createdAt[3] || 0, order.createdAt[4] || 0, order.createdAt[5] || 0).toISOString()
+                    ? new Date(order.createdAt[0], order.createdAt[1] - 1, order.createdAt[2],
+                        order.createdAt[3] || 0, order.createdAt[4] || 0, order.createdAt[5] || 0).toISOString()
                     : order.createdAt,
                 updatedAt: Array.isArray(order.updatedAt)
                     ? new Date(order.updatedAt[0], order.updatedAt[1] - 1, order.updatedAt[2]).toISOString()
@@ -54,7 +56,7 @@ export const useOrders = () => {
 
     const updateStatus = async (id: string, status: string) => {
         try {
-            await fetch(`http://localhost:8080/api/orders/${id}/status`, {
+            await fetch(`${API_URL}/api/orders/${id}/status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status })
