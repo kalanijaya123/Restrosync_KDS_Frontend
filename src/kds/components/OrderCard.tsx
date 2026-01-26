@@ -4,6 +4,8 @@ import { Clock, User, Package, AlertCircle, Phone } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { Order } from '../types/order'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+
 interface OrderCardProps {
     order: Order
     onNext: () => void
@@ -135,17 +137,48 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
 
                         return items.map((raw: any, i: number) => {
                             const qty = Number(raw?.qty ?? raw?.quantity ?? 1)
-                            const name = raw?.menuItemName || raw?.name || raw?.title || raw?.itemName || 'Item'
+                            const name = raw?.menuItemName || raw?.name || raw?.title || raw?.itemName || raw?.item?.name || 'Item'
                             const size = raw?.sizeName ? `${raw.sizeName} ` : ''
                             const unitPrice = Number(raw?.basePrice ?? raw?.price ?? 0)
                             const lineTotal = (unitPrice * (qty || 1))
                             const extras = Array.isArray(raw?.extras) ? raw.extras : []
 
+                            // Get image URL - try multiple possible fields
+                            let imageUrl = raw?.mediaUrl || raw?.item?.mediaUrl || raw?.image || raw?.imageUrl || raw?.img || null
+
+                            // If image URL exists and is a relative path, prepend API_URL
+                            if (imageUrl && !imageUrl.startsWith('http')) {
+                                imageUrl = `${API_URL}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`
+                            }
+
+                            // Debug log for first item only
+                            if (i === 0) {
+                                console.log('OrderCard Item Data:', {
+                                    raw,
+                                    imageUrl,
+                                    menuItemName: name
+                                })
+                            }
+
                             return (
                                 <div key={i} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div className="text-sm font-semibold text-gray-900 dark:text-white">{qty} × {size}{name}</div>
-                                        <div className="text-sm text-gray-600 dark:text-gray-400">Rs {Number(lineTotal).toFixed(0)}</div>
+                                    <div className="flex gap-3 mb-2">
+                                        {/* Image container with placeholder */}
+                                        <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                            {imageUrl ? (
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <Package className="w-8 h-8 text-gray-400" />
+                                            )}
+                                        </div>
+                                        <div className="flex-1 flex justify-between items-start">
+                                            <div className="text-sm font-semibold text-gray-900 dark:text-white">{qty} × {size}{name}</div>
+                                            <div className="text-sm text-gray-600 dark:text-gray-400 ml-2">Rs {Number(lineTotal).toFixed(0)}</div>
+                                        </div>
                                     </div>
 
                                     {extras.length > 0 && (

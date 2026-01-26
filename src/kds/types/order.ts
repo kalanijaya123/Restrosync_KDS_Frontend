@@ -19,6 +19,14 @@ export interface OrderItem {
     riceUsed?: number
     cheeseUsed?: number
     totalIngredientCost?: number
+    mediaUrl?: string
+    image?: string
+    imageUrl?: string
+    img?: string
+    item?: {
+        name?: string
+        mediaUrl?: string
+    }
 }
 
 export interface Order {
