@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { Clock, User, Package, AlertCircle, Phone } from 'lucide-react'
 import { motion } from 'framer-motion'
+import toast from 'react-hot-toast'
 import type { Order } from '../types/order'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
@@ -207,7 +208,23 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
                 </div>
 
                 <button
-                    onClick={onNext}
+                    onClick={() => {
+                        if (order.status === 'ready') {
+                            const kotLabel = order.kotToken || `KOT-${String(order.orderNo).padStart(3, '0')}`
+                            toast.success(`${kotLabel} is ready to serve!`, {
+                                duration: 3000,
+                                position: 'top-center',
+                                style: {
+                                    background: '#10b981',
+                                    color: '#fff',
+                                    fontWeight: 'bold',
+                                    padding: '16px',
+                                    fontSize: '16px',
+                                }
+                            })
+                        }
+                        onNext()
+                    }}
                     className="w-full py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md font-semibold text-sm shadow-md transform hover:scale-105 transition-all"
                 >
                     {order.status === 'pending' && 'START COOKING'}

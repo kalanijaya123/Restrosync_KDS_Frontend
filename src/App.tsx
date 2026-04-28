@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 import MainKDS from './kds/pages/MainKDS'
 import PrepStation from './kds/pages/PrepStation'
 import GrillStation from './kds/pages/GrillStation'
@@ -11,7 +12,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-
+        <Toaster />
         <Routes>
           <Route path="/" element={<MainKDS />} />
           <Route path="/kds/main" element={<MainKDS />} />
