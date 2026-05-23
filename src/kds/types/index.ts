@@ -15,6 +15,7 @@ export interface Order {
     /** Order source (e.g., 'pos', 'mobile') */
     source?: string
     tableId: string
+    tableNumber?: string
     /** Optional numeric table identifier if provided separately */
     tableNo?: string
     items: OrderItem[]

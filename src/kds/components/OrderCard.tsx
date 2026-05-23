@@ -96,9 +96,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
                         </span>
                     ) : (
                         // Dine-in: prefer showing tableId/tableNo when available, otherwise show DINE-IN
-                        o.tableId || o.tableNo ? (
+                        o.tableId || o.tableNo || o.tableNumber ? (
                             <span className="px-4 py-2 bg-blue-500 text-white rounded-full text-base font-extrabold shadow">
-                                T{String(o.tableId ?? o.tableNo).slice(-4).toUpperCase()}
+                                {o.tableNumber || o.tableNo || `T${String(o.tableId).slice(-4).toUpperCase()}`}
                             </span>
                         ) : (
                             <span className="px-3 py-1 bg-emerald-500 text-white rounded-full text-sm font-bold shadow">

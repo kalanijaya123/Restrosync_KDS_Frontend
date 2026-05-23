@@ -9,6 +9,7 @@ export interface Order {
     orderNo: number
     kotToken: string
     tableId?: string | null
+    tableNumber?: string | null
     source: string
     items: any[]
     total: number
