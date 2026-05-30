@@ -10,6 +10,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 interface OrderCardProps {
     order: Order
     onNext: () => void
+    onToggleItemChecked?: (orderId: string, itemIndex: number, checked: boolean) => void
 }
 
 // FIX FOR MONGODB ARRAY DATE FORMAT [year, month, day, ...]
@@ -22,7 +23,10 @@ const parseDate = (dateInput: any): Date => {
     return new Date(dateInput)
 }
 
-export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
+export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext, onToggleItemChecked }) => {
+    const hasNewItems = Boolean((order as any)?.hasNewItems)
+    const newItemsCount = Number((order as any)?.newItemsCount ?? 0)
+
     const [elapsed, setElapsed] = useState<string>(() => {
         const created = parseDate(order.createdAt)
         const diff = Math.max(0, Date.now() - created.getTime())
@@ -85,7 +89,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white dark:bg-gray-800 rounded-xl p-4 border-2 border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all"
+            className={`rounded-xl p-4 border-2 shadow-lg hover:shadow-xl transition-all ${hasNewItems
+                ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-400 dark:border-orange-500 ring-2 ring-orange-300/60 dark:ring-orange-500/40 animate-pulse'
+                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                }`}
         >
             {/* ORDER NUMBER + TIME + SERVICE TYPE */}
             <div className="flex justify-between items-start mb-6">
@@ -93,6 +100,12 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
                     <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400 tracking-wide">
                         {`Order #${order.orderNo || String(order.id || '').slice(-6).toUpperCase()}`}
                     </div>
+                    {hasNewItems && (
+                        <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-orange-500 px-3 py-1 text-xs font-bold text-white shadow-md">
+                            <AlertCircle className="w-4 h-4" />
+                            <span>{newItemsCount > 0 ? `${newItemsCount} NEW ITEM${newItemsCount > 1 ? 'S' : ''}` : 'NEW ITEMS ADDED'}</span>
+                        </div>
+                    )}
                     <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2 mt-1">
                         <Clock className="w-6 h-6" />
                         <span className="ml-1 font-mono">{elapsed}</span>
@@ -124,9 +137,14 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
                     </div>
                 )}
                 {order.notes && order.notes.trim() && (
-                    <div className="mt-3 flex items-start gap-2 text-orange-600 dark:text-orange-400 font-medium bg-orange-100 dark:bg-orange-900/30 rounded-lg p-2">
-                        <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-                        <span className="text-sm">{order.notes}</span>
+                    <div className="mt-3 rounded-lg border border-orange-300 dark:border-orange-700 bg-orange-100 dark:bg-orange-900/30 p-3">
+                        <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300 font-semibold mb-1">
+                            <AlertCircle className="w-5 h-5 shrink-0" />
+                            <span>Kitchen Note</span>
+                        </div>
+                        <p className="text-sm text-orange-800 dark:text-orange-200 whitespace-pre-wrap wrap-break-word">
+                            {order.notes}
+                        </p>
                     </div>
                 )}
             </div>
@@ -145,6 +163,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
                             const unitPrice = Number(raw?.basePrice ?? raw?.price ?? 0)
                             const lineTotal = (unitPrice * (qty || 1))
                             const extras = Array.isArray(raw?.extras) ? raw.extras : []
+                            const itemChecked = Boolean(raw?.checked)
 
                             // Get image URL - try multiple possible fields
                             let imageUrl = raw?.mediaUrl || raw?.item?.mediaUrl || raw?.image || raw?.imageUrl || raw?.img || null
@@ -164,7 +183,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
                             }
 
                             return (
-                                <div key={i} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
+                                <div key={i} className={`rounded-lg p-3 border ${itemChecked ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-400 dark:border-emerald-600' : 'bg-gray-50 dark:bg-gray-700/50 border-gray-200 dark:border-gray-600'}`}>
                                     <div className="flex gap-3 mb-2">
                                         {/* Image container with placeholder */}
                                         <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
@@ -178,9 +197,21 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
                                                 <Package className="w-8 h-8 text-gray-400" />
                                             )}
                                         </div>
-                                        <div className="flex-1 flex justify-between items-start">
-                                            <div className="text-sm font-semibold text-gray-900 dark:text-white">{qty} × {size}{name}</div>
-                                            <div className="text-sm text-gray-600 dark:text-gray-400 ml-2">Rs {Number(lineTotal).toFixed(0)}</div>
+                                        <div className="flex-1 flex justify-between items-start gap-3">
+                                            <div className="flex items-start gap-2">
+                                                <label className={`mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded border ${itemChecked ? 'bg-emerald-500 border-emerald-500' : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600'} ${order.status === 'preparing' ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}`}>
+                                                    <input
+                                                        type="checkbox"
+                                                        className="sr-only"
+                                                        checked={itemChecked}
+                                                        disabled={order.status !== 'preparing' || !onToggleItemChecked}
+                                                        onChange={e => onToggleItemChecked?.(order.id, i, e.target.checked)}
+                                                    />
+                                                    {itemChecked && <span className="text-white text-xs font-bold">✓</span>}
+                                                </label>
+                                                <div className={`text-sm font-semibold ${itemChecked ? 'text-emerald-700 dark:text-emerald-300 line-through decoration-2 decoration-emerald-400' : 'text-gray-900 dark:text-white'}`}>{qty} × {size}{name}</div>
+                                            </div>
+                                            <div className={`text-sm ml-2 ${itemChecked ? 'text-emerald-700 dark:text-emerald-300 font-semibold' : 'text-gray-600 dark:text-gray-400'}`}>Rs {Number(lineTotal).toFixed(0)}</div>
                                         </div>
                                     </div>
 

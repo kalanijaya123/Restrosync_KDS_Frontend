@@ -11,6 +11,7 @@ const MainKDS = () => {
     const ordersRaw = hook.orders ?? []
     const orders = Array.isArray(ordersRaw) ? ordersRaw : []
     const updateStatus = typeof hook.updateStatus === 'function' ? hook.updateStatus : (() => { })
+    const toggleItemChecked = typeof hook.toggleItemChecked === 'function' ? hook.toggleItemChecked : (() => { })
 
     const pending = orders.filter(o => o.status === 'pending')
     const preparing = orders.filter(o => o.status === 'preparing')
@@ -75,7 +76,7 @@ const MainKDS = () => {
                                     <p className="text-center text-gray-400 dark:text-gray-500 text-2xl py-20">No pending orders</p>
                                 ) : (
                                     pendingSorted.map(order => (
-                                        <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'preparing')} />
+                                        <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'preparing')} onToggleItemChecked={toggleItemChecked} />
                                     ))
                                 )}
                             </div>
@@ -89,7 +90,7 @@ const MainKDS = () => {
                                     <p className="text-center text-gray-400 dark:text-gray-500 text-2xl py-20">All caught up!</p>
                                 ) : (
                                     preparingSorted.map(order => (
-                                        <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'ready')} />
+                                        <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'ready')} onToggleItemChecked={toggleItemChecked} />
                                     ))
                                 )}
                             </div>
@@ -103,7 +104,7 @@ const MainKDS = () => {
                                     <p className="text-center text-gray-400 dark:text-gray-500 text-2xl py-20">Waiting for orders</p>
                                 ) : (
                                     readySorted.map(order => (
-                                        <OrderCard key={order.id} order={order as any} onNext={() => { }} />
+                                        <OrderCard key={order.id} order={order as any} onNext={() => { }} onToggleItemChecked={toggleItemChecked} />
                                     ))
                                 )}
                             </div>

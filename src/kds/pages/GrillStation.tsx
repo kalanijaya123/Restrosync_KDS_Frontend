@@ -10,6 +10,7 @@ const GrillKDS = () => {
     const ordersRaw = hook.orders ?? []
     const orders = Array.isArray(ordersRaw) ? ordersRaw : []
     const updateStatus = typeof hook.updateStatus === 'function' ? hook.updateStatus : () => { }
+    const toggleItemChecked = typeof hook.toggleItemChecked === 'function' ? hook.toggleItemChecked : () => { }
 
     // GRILL ITEMS: Chicken, Beef, Seafood, Sausage, etc.
     const grillCategories = ['grill', 'chicken', 'beef', 'seafood', 'fryer', 'tandoor']
@@ -52,7 +53,7 @@ const GrillKDS = () => {
                             <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 text-center mb-4">FIRE UP</h2>
                             <div className="space-y-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
                                 {pending.map(order => (
-                                    <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'preparing')} />
+                                    <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'preparing')} onToggleItemChecked={toggleItemChecked} />
                                 ))}
                             </div>
                         </div>
@@ -61,7 +62,7 @@ const GrillKDS = () => {
                             <h2 className="text-lg font-semibold text-orange-600 dark:text-orange-400 text-center mb-4">ON FIRE</h2>
                             <div className="space-y-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
                                 {preparing.map(order => (
-                                    <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'ready')} />
+                                    <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'ready')} onToggleItemChecked={toggleItemChecked} />
                                 ))}
                             </div>
                         </div>
@@ -70,7 +71,7 @@ const GrillKDS = () => {
                             <h2 className="text-lg font-semibold text-emerald-600 dark:text-emerald-400 text-center mb-4">PLATED</h2>
                             <div className="space-y-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
                                 {ready.map(order => (
-                                    <OrderCard key={order.id} order={order as any} onNext={() => { }} />
+                                    <OrderCard key={order.id} order={order as any} onNext={() => { }} onToggleItemChecked={toggleItemChecked} />
                                 ))}
                             </div>
                         </div>

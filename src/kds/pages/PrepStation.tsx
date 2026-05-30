@@ -10,6 +10,7 @@ const PrepKDS = () => {
     const ordersRaw = hook.orders ?? []
     const orders = Array.isArray(ordersRaw) ? ordersRaw : []
     const updateStatus = typeof hook.updateStatus === 'function' ? hook.updateStatus : () => { }
+    const toggleItemChecked = typeof hook.toggleItemChecked === 'function' ? hook.toggleItemChecked : () => { }
 
     const prepKeywords = ['rice', 'noodles', 'soup', 'salad', 'curry', 'devilled', 'mongolian', 'chop suey']
 
@@ -37,12 +38,12 @@ const PrepKDS = () => {
                 </header>
 
                 <div className="px-6 py-8">
-                    <div className="max-w-screen-lg mx-auto grid grid-cols-2 gap-6">
+                    <div className="max-w-5xl mx-auto grid grid-cols-2 gap-6">
                         <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-6 shadow-lg border-2 border-yellow-300 dark:border-yellow-700">
                             <h2 className="text-2xl font-semibold text-yellow-600 dark:text-yellow-400 text-center mb-4">COOKING</h2>
                             <div className="space-y-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
                                 {preparing.map(order => (
-                                    <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'ready')} />
+                                    <OrderCard key={order.id} order={order as any} onNext={() => updateStatus(order.id, 'ready')} onToggleItemChecked={toggleItemChecked} />
                                 ))}
                             </div>
                         </div>
@@ -51,7 +52,7 @@ const PrepKDS = () => {
                             <h2 className="text-2xl font-semibold text-emerald-600 dark:text-emerald-400 text-center mb-4">READY</h2>
                             <div className="space-y-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 220px)' }}>
                                 {ready.map(order => (
-                                    <OrderCard key={order.id} order={order as any} onNext={() => { }} />
+                                    <OrderCard key={order.id} order={order as any} onNext={() => { }} onToggleItemChecked={toggleItemChecked} />
                                 ))}
                             </div>
                         </div>

@@ -10,6 +10,7 @@ const DrinksBarKDS = () => {
     const ordersRaw = hook.orders ?? []
     const orders = Array.isArray(ordersRaw) ? ordersRaw : []
     const updateStatus = typeof hook.updateStatus === 'function' ? hook.updateStatus : () => { }
+    const toggleItemChecked = typeof hook.toggleItemChecked === 'function' ? hook.toggleItemChecked : () => { }
 
     const drinkKeywords = ['juice', 'lassi', 'milkshake', 'coffee', 'tea', 'soda', 'mocktail', 'cocktail', 'beer']
 
@@ -50,7 +51,7 @@ const DrinksBarKDS = () => {
                                     <OrderCard order={order as any} onNext={() => {
                                         if (order.status === 'pending') updateStatus(order.id, 'preparing')
                                         else if (order.status === 'preparing') updateStatus(order.id, 'ready')
-                                    }} />
+                                    }} onToggleItemChecked={toggleItemChecked} />
                                 </div>
                             ))}
                         </div>
