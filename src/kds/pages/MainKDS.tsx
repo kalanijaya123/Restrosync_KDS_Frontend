@@ -4,6 +4,7 @@ import { ChefHat, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { OrderCard } from '../components/OrderCard'
 import { useOrders } from '../hooks/useOrders'
 import { Layout } from '../components/Layout'
+import VoiceAssistantPanel from '../components/VoiceAssistantPanel'
 
 const MainKDS = () => {
     const hook = useOrders()
@@ -64,6 +65,7 @@ const MainKDS = () => {
             <div ref={pageRef} className="bg-gray-50 dark:bg-gray-900 min-h-screen overflow-auto">
 
                 <div className="max-w-screen-2xl mx-auto px-12 py-8 pb-24">
+                    <VoiceAssistantPanel orders={orders as any} onUpdateStatus={updateStatus} />
                     <div className="grid grid-cols-3 gap-14 items-start">
                         {/* PENDING */}
                         <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-6 shadow-lg border-2 border-red-300 dark:border-red-700">

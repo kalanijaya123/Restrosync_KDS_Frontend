@@ -6,9 +6,7 @@ import {
     Coffee,
     Package,
     Settings,
-    LogOut,
-    Clock,
-    Home
+    LogOut
 } from 'lucide-react'
 import { useDarkMode } from '../../contexts/DarkModeContext'
 

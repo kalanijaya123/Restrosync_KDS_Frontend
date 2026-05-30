@@ -61,6 +61,16 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
 
     const typeHint = String(o?.orderType ?? o?.type ?? o?.source ?? '').toLowerCase()
 
+    const sourceLabel = (() => {
+        if (typeHint.includes('online') && typeHint.includes('delivery')) return 'Online Delivery'
+        if (typeHint.includes('online') && (typeHint.includes('pickup') || typeHint.includes('take'))) return 'Online Pickup'
+        if (typeHint.includes('online') && typeHint.includes('dine')) return 'Online Dine In'
+        if (typeHint.includes('delivery')) return 'Online Delivery'
+        if (typeHint.includes('pickup') || typeHint.includes('take')) return 'Takeaway'
+        if (typeHint.includes('dine') || o?.tableId || o?.tableNo || o?.tableNumber) return 'Dine In'
+        return 'Takeaway'
+    })()
+
     const isTakeaway = (() => {
         if (_explicitIsTakeaway !== null) return _explicitIsTakeaway
         if (typeHint) {
@@ -77,11 +87,11 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
             exit={{ opacity: 0, scale: 0.95 }}
             className="bg-white dark:bg-gray-800 rounded-xl p-4 border-2 border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all"
         >
-            {/* KOT TOKEN + TIME + TABLE/TAKEAWAY */}
+            {/* ORDER NUMBER + TIME + SERVICE TYPE */}
             <div className="flex justify-between items-start mb-6">
                 <div>
                     <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400 tracking-wide">
-                        {order.kotToken || `KOT-${String(order.orderNo).padStart(3, '0')}`}
+                        {`Order #${order.orderNo || String(order.id || '').slice(-6).toUpperCase()}`}
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2 mt-1">
                         <Clock className="w-6 h-6" />
@@ -90,22 +100,14 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
                 </div>
 
                 <div>
-                    {isTakeaway ? (
-                        <span className="px-3 py-1 bg-red-500 text-white rounded-full text-sm font-bold shadow">
-                            TAKEAWAY
-                        </span>
-                    ) : (
-                        // Dine-in: prefer showing tableId/tableNo when available, otherwise show DINE-IN
-                        o.tableId || o.tableNo || o.tableNumber ? (
-                            <span className="px-4 py-2 bg-blue-500 text-white rounded-full text-base font-extrabold shadow">
-                                {o.tableNumber || o.tableNo || `T${String(o.tableId).slice(-4).toUpperCase()}`}
-                            </span>
-                        ) : (
-                            <span className="px-3 py-1 bg-emerald-500 text-white rounded-full text-sm font-bold shadow">
-                                DINE-IN
-                            </span>
-                        )
-                    )}
+                    <span className={`px-3 py-1 rounded-full text-sm font-bold shadow ${sourceLabel.includes('Delivery')
+                        ? 'bg-sky-500 text-white'
+                        : sourceLabel === 'Takeaway'
+                            ? 'bg-red-500 text-white'
+                            : 'bg-blue-500 text-white'
+                        }`}>
+                        {sourceLabel}
+                    </span>
                 </div>
             </div>
 
@@ -165,7 +167,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
                                 <div key={i} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
                                     <div className="flex gap-3 mb-2">
                                         {/* Image container with placeholder */}
-                                        <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                        <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                                             {imageUrl ? (
                                                 <img
                                                     src={imageUrl}
@@ -210,8 +212,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext }) => {
                 <button
                     onClick={() => {
                         if (order.status === 'ready') {
-                            const kotLabel = order.kotToken || `KOT-${String(order.orderNo).padStart(3, '0')}`
-                            toast.success(`${kotLabel} is ready to serve!`, {
+                            const orderLabel = `Order #${order.orderNo || String(order.id || '').slice(-6).toUpperCase()}`
+                            toast.success(`${orderLabel} is ready to serve!`, {
                                 duration: 3000,
                                 position: 'top-center',
                                 style: {
