@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
     LayoutDashboard,
     ChefHat,
@@ -21,6 +21,7 @@ const menuItems = [
 
 export const Sidebar = () => {
     const location = useLocation()
+    const navigate = useNavigate()
     const { darkMode } = useDarkMode()
 
     return (
@@ -80,7 +81,13 @@ export const Sidebar = () => {
 
             {/* Bottom Section */}
             <div className={`p-6 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                <button className="w-full flex items-center gap-4 px-6 py-5 rounded-2xl bg-red-500 hover:bg-red-600 text-white transition-all">
+                <button
+                    onClick={() => {
+                        localStorage.removeItem('currentUser')
+                        navigate('/login')
+                    }}
+                    className="w-full flex items-center gap-4 px-6 py-5 rounded-2xl bg-red-500 hover:bg-red-600 text-white transition-all"
+                >
                     <LogOut className="w-7 h-7" />
                     <span className="font-semibold text-lg">Logout</span>
                 </button>

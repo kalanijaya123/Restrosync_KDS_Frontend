@@ -164,6 +164,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext, onToggleIte
                             const lineTotal = (unitPrice * (qty || 1))
                             const extras = Array.isArray(raw?.extras) ? raw.extras : []
                             const itemChecked = Boolean(raw?.checked)
+                            const canToggleItem = Boolean(onToggleItemChecked) && !['served', 'cancelled'].includes(String(order.status))
 
                             // Get image URL - try multiple possible fields
                             let imageUrl = raw?.mediaUrl || raw?.item?.mediaUrl || raw?.image || raw?.imageUrl || raw?.img || null
@@ -199,16 +200,20 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onNext, onToggleIte
                                         </div>
                                         <div className="flex-1 flex justify-between items-start gap-3">
                                             <div className="flex items-start gap-2">
-                                                <label className={`mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded border ${itemChecked ? 'bg-emerald-500 border-emerald-500' : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600'} ${order.status === 'preparing' ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}`}>
-                                                    <input
-                                                        type="checkbox"
-                                                        className="sr-only"
-                                                        checked={itemChecked}
-                                                        disabled={order.status !== 'preparing' || !onToggleItemChecked}
-                                                        onChange={e => onToggleItemChecked?.(order.id, i, e.target.checked)}
-                                                    />
-                                                    {itemChecked && <span className="text-white text-xs font-bold">✓</span>}
-                                                </label>
+                                                <button
+                                                    type="button"
+                                                    disabled={!canToggleItem}
+                                                    onClick={e => {
+                                                        e.preventDefault()
+                                                        e.stopPropagation()
+                                                        onToggleItemChecked?.(order.id, i, !itemChecked)
+                                                    }}
+                                                    className={`mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded border transition-colors ${itemChecked ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-transparent'} ${canToggleItem ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}`}
+                                                    aria-label={itemChecked ? 'Mark item as not prepared' : 'Mark item as prepared'}
+                                                    aria-pressed={itemChecked}
+                                                >
+                                                    <span className="text-white text-xs font-bold">✓</span>
+                                                </button>
                                                 <div className={`text-sm font-semibold ${itemChecked ? 'text-emerald-700 dark:text-emerald-300 line-through decoration-2 decoration-emerald-400' : 'text-gray-900 dark:text-white'}`}>{qty} × {size}{name}</div>
                                             </div>
                                             <div className={`text-sm ml-2 ${itemChecked ? 'text-emerald-700 dark:text-emerald-300 font-semibold' : 'text-gray-600 dark:text-gray-400'}`}>Rs {Number(lineTotal).toFixed(0)}</div>

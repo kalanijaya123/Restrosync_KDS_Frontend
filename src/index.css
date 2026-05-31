@@ -40,7 +40,8 @@ body {
   font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   background: var(--bg-light);
   color: var(--text-light);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   min-height: 100vh;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -53,8 +54,8 @@ body.dark-mode {
 /* Full viewport app */
 #root {
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow: visible;
 }
 
 /* Glassmorphism utility (use with bg-glass) */
