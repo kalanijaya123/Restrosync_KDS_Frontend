@@ -9,7 +9,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
     return (
         <div className="flex">
             <Sidebar />
-            <main className="flex-1 ml-80 min-h-screen bg-gray-50 dark:bg-gray-900">
+            <main className="flex-1 ml-80 min-h-screen bg-gray-50 dark:bg-gray-900 overflow-y-auto">
                 {/* Top Navbar with Dark Mode Toggle */}
                 <div className={`sticky top-0 z-40 px-8 py-4 border-b backdrop-blur-sm transition-colors ${darkMode ? 'bg-gray-900/95 border-gray-700' : 'bg-white/95 border-gray-200'
                     }`}>

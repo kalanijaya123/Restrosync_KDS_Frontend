@@ -17,7 +17,7 @@ const colors: Record<StatusKey, string> = {
 }
 
 export const StatusColumn: React.FC<Props> = ({ title, onNext }) => {
-    const { orders: ordersRaw = [], updateStatus } = useOrders()
+    const { orders: ordersRaw = [], updateStatus, toggleItemChecked } = useOrders()
     const orders = Array.isArray(ordersRaw) ? ordersRaw : []
     const bg = colors[title] ?? 'bg-gray-800'
 
@@ -45,6 +45,7 @@ export const StatusColumn: React.FC<Props> = ({ title, onNext }) => {
                         key={order.id}
                         order={order as any}
                         onNext={() => handleNext(order.id)}
+                        onToggleItemChecked={toggleItemChecked}
                     />
                 ))}
             </div>

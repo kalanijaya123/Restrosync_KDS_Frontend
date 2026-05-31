@@ -14,6 +14,7 @@ export interface OrderItem {
     sizeName: string
     basePrice: number
     qty: number
+    checked?: boolean
     extras: SelectedExtra[]
     chickenUsed?: number
     riceUsed?: number
@@ -47,4 +48,6 @@ export interface Order {
     customerPhone?: string | null
     notes?: string | null
     waiterName: string
+    hasNewItems?: boolean
+    newItemsCount?: number
 }
